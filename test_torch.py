@@ -50,8 +50,8 @@ class KoGPT2Chat(LightningModule):
             # 답변 a 설정
             a = ''
 
-            # 답변 생성 과정
-            while 1:
+            # 답변 생성 과정 기존 while 문에서 for 문으로 변경
+            for i in range(200):
                 # tok.encode(U_TKN + q + SENT + sent + S_TKN + a) = f'<usr>{질문}<unused1>0<sys>{생성된 답변}'
                 input_ids = torch.LongTensor(tok.encode(U_TKN + q + SENT + sent + S_TKN + a)).unsqueeze(dim=0)
                 pred = self(input_ids) # KoGPT2 forward 진행 pred 에는 모든 토큰에 대한 가능성
