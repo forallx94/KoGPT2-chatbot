@@ -12,23 +12,28 @@ from torch.utils.data import DataLoader, Dataset
 from transformers.optimization import AdamW, get_cosine_schedule_with_warmup
 from transformers import PreTrainedTokenizerFast, GPT2LMHeadModel
 
+
 parser = argparse.ArgumentParser(description='Simsimi based on KoGPT-2')
 
+# test 확인 (chat 시작)
 parser.add_argument('--chat',
                     action='store_true',
                     default=False,
                     help='response generation on given user input')
 
+# 감정 상태 확인
 parser.add_argument('--sentiment',
                     type=str,
                     default='0',
                     help='sentiment for system. 0 is neutral, 1 is negative, 2 is positive.')
 
+# 모델 weight 위치
 parser.add_argument('--model_params',
                     type=str,
                     default='model_chp/model_-last.ckpt',
                     help='model binary for starting chat')
 
+# 훈련 여부 확인
 parser.add_argument('--train',
                     action='store_true',
                     default=False,
@@ -37,19 +42,22 @@ parser.add_argument('--train',
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-U_TKN = '<usr>'
-S_TKN = '<sys>'
+# tokenizer 토큰 정보 설정
+U_TKN = '<usr>' # Q token
+S_TKN = '<sys>' # A token
 BOS = '</s>'
 EOS = '</s>'
 MASK = '<unused0>'
 SENT = '<unused1>'
 PAD = '<pad>'
 
+# KoGPT2 tokrnizer 설정
 TOKENIZER = PreTrainedTokenizerFast.from_pretrained("skt/kogpt2-base-v2",
             bos_token=BOS, eos_token=EOS, unk_token='<unk>',
             pad_token=PAD, mask_token=MASK) 
 
 
+# 데이터 로더
 class CharDataset(Dataset):
     def __init__(self, chats, max_len=32):
         self._data = chats
@@ -193,23 +201,38 @@ class KoGPT2Chat(LightningModule):
 
     def chat(self, sent='0'):
         tok = TOKENIZER
-        sent_tokens = tok.tokenize(sent)
+        sent_tokens = tok.tokenize(sent) #'0' 를 토큰화
         with torch.no_grad():
             while 1:
+                # 질문 입력
                 q = input('user > ').strip()
+
+                # 정지 신호 quit
                 if q == 'quit':
                     break
+
+                # 답변 a 설정
                 a = ''
+
+                # 답변 생성 과정
                 while 1:
+                    # tok.encode(U_TKN + q + SENT + sent + S_TKN + a) = f'<usr>{질문}<unused1>0<sys>{생성된 답변}'
                     input_ids = torch.LongTensor(tok.encode(U_TKN + q + SENT + sent + S_TKN + a)).unsqueeze(dim=0)
-                    pred = self(input_ids)
+                    pred = self(input_ids) # KoGPT2 forward 진행 pred 에는 모든 토큰에 대한 가능성
+
+                    # 11개의 각 최고 값을 추출 후 마지막 하나만을 선택
                     gen = tok.convert_ids_to_tokens(
                         torch.argmax(
                             pred,
                             dim=-1).squeeze().numpy().tolist())[-1]
+
+                    # 종료 단어일 경우 종료
                     if gen == EOS:
                         break
+
+                    # 종료가 아닐경우 답변 추가 _ 일경우 띄어쓰기로 변경
                     a += gen.replace('▁', ' ')
+
                 print("Simsimi > {}".format(a.strip()))
 
 
@@ -237,6 +260,7 @@ if __name__ == "__main__":
             checkpoint_callback=checkpoint_callback, gradient_clip_val=1.0)
         trainer.fit(model)
         logging.info('best model path {}'.format(checkpoint_callback.best_model_path))
+
     if args.chat:
         model = KoGPT2Chat.load_from_checkpoint(args.model_params)
         model.chat()

@@ -5,6 +5,10 @@
 - [공개된 한글 챗봇 데이터](https://github.com/songys/Chatbot_data)와 pre-trained [KoGPT2](https://github.com/SKT-AI/KoGPT2)를 이용한 간단한 챗봇 실험
 - `KoGPT2`의 다양한 활용 가능성을 타진하고 성능을 정성적으로 평가한다.
 
+## Fork Purpose
+
+- 해당 코드 이해 및 추가적인 Fine tune 을 위해 train_torch.py 에 대한 주석 작성
+
 ## Architecture
 
 학습 데이터에 적합하게 [Hello! GPT-2](https://arxiv.org/abs/1907.05774)를 응용, 아래와 같은 아키텍처를 설계함
