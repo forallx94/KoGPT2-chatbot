@@ -8,6 +8,7 @@
 ## Fork Purpose
 
 - 해당 코드 이해 및 추가적인 Fine tune 을 위해 train_torch.py 에 대한 주석 작성
+- 기존의 input 입력 방식에서 하나의 함수로 작동하도록 설정 변경 (test_torch.py)
 
 ## Architecture
 
@@ -66,8 +67,22 @@ user > 너를 만든 사람은?
 Simsimi > 당신이 만든 사람이에요.
 ```
 
+## How to Chat! ver module
+
+
+```python
+# 모듈로 로드 하여 진행하는 과정
+from test_torch import KoGPT2Chat
+model = KoGPT2Chat.load_from_checkpoint('model_chp/model_-last.ckpt')
+question = '내가 그의 이름을 불러 주었을 때'
+answer = model.chat(question)
+print(answer)
+
+'''그게 당신의 운이었을 거예요.'''
+```
+
 ## Colab tutorials
 
 - PyTorch
-  - [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/haven-jeon/KoGPT2-chatbot/blob/master/KoGPT2_chatbot_pytorch.ipynb)
+  - [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/forallx94/KoGPT2-chatbot/blob/master/KoGPT2_chatbot_pytorch.ipynb)
 
