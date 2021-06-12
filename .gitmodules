@@ -1,3 +1,6 @@
 [submodule "Chatbot_data"]
 	path = Chatbot_data
 	url = https://github.com/haven-jeon/Chatbot_data.git
+[submodule "EC_data"]
+	path = EC_data
+	url = https://github.com/forallx94/EC_data.git

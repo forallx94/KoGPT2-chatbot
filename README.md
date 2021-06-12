@@ -9,6 +9,7 @@
 
 - 해당 코드 이해 및 추가적인 Fine tune 을 위해 train_torch.py 에 대한 주석 작성
 - 기존의 input 입력 방식에서 하나의 함수로 작동하도록 설정 변경 (test_torch.py)
+- [Merged Data for Korean Emotion Classification](https://github.com/forallx94/EC_data)을 감정 섞인 질문으로 가정하여 답변 생성
 
 ## Architecture
 
@@ -79,6 +80,12 @@ answer = model.chat(question)
 print(answer)
 
 '''그게 당신의 운이었을 거예요.'''
+```
+
+## How to Chat! ver make excel result
+
+```bash
+python chatboy.py
 ```
 
 ## Colab tutorials
